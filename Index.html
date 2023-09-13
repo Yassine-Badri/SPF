@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPF Record Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label, textarea, button {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 97%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            font-family: Arial, sans-serif;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output-container {
+            width: 97%; /* Adjust the max width as needed */
+            height: 200px; /* Adjust the max height as needed */
+            overflow: auto;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>SPF Record Generator</h1>
+    <div class="container">
+        <label for="inputIP">Enter IP Addresses (one per line):</label>
+        <textarea id="inputIP" placeholder="Example: 192.168.1.1"></textarea>
+        <label for="inputDomain">Enter Domains (one per line):</label>
+        <textarea id="inputDomain" placeholder="Example: example.com"></textarea>
+        <button onclick="generateSPFRecords()">Generate SPF Records</button>
+        <h2>Generated SPF Records:</h2>
+        <div class="output-container" id="spfOutput"></div>
+    </div>
+
+    <script>
+        function generateSPFRecords() {
+            // Get user input
+            const ipInput = document.getElementById("inputIP").value;
+            const domainInput = document.getElementById("inputDomain").value;
+
+            // Split IP addresses and domains into arrays
+            const ips = ipInput.split('\n').map(ip => ip.trim());
+            const domains = domainInput.split('\n').map(domain => domain.trim());
+
+            // Generate SPF records for each domain with all provided IPs
+            const spfRecords = domains.map(domain => {
+                const ipList = ips.map(ip => `ip4:${ip}`).join(' ');
+                return `${domain},${domain},TXT,"v=spf1 ${ipList} -all"`;
+            });
+
+            // Display the generated SPF records
+            document.getElementById("spfOutput").innerHTML = spfRecords.join('<br>');
+        }
+    </script>
+</body>
+</html>
